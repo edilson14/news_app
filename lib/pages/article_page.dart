@@ -22,7 +22,9 @@ class ArticlePage extends StatelessWidget {
           children: [
             Text(
               article.title,
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(
               height: 8,

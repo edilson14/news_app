@@ -24,6 +24,7 @@ class _NewsPageStatus extends State<NewsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('News Pages'),
+        centerTitle: true,
       ),
       body: Consumer<NewsChangeNotifier>(
         builder: (builder, notifier, child) {
@@ -52,7 +53,12 @@ class _NewsPageStatus extends State<NewsPage> {
                     );
                   },
                   child: ListTile(
-                    title: Text(article.title),
+                    title: Text(
+                      article.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     subtitle: Text(
                       article.content,
                       maxLines: 4,
