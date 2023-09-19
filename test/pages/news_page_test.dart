@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:news_app/models/article_model.dart';
-import 'package:news_app/pages/news_page.dart';
-import 'package:news_app/providers/news_change_notifier.dart';
-import 'package:provider/provider.dart';
 
-import '../services/news_services_test.dart';
+import '../helpers/helpers.dart';
 
 void main() {
   late MockNewsServices mockNewsServices;
@@ -17,44 +12,12 @@ void main() {
     },
   );
 
-  final returnedArticles = [
-    Article(title: 'title 1', content: 'content 1'),
-    Article(title: 'title 2', content: 'content 2'),
-    Article(title: 'title 3', content: 'content 3'),
-  ];
-
-  void arrangeNewsServices() {
-    when(() => mockNewsServices.getArticles()).thenAnswer(
-      (_) async => returnedArticles,
-    );
-  }
-
-  void arrangeNewsServicesAfter3Seconds() {
-    when(() => mockNewsServices.getArticles()).thenAnswer(
-      (_) async {
-        await Future.delayed(
-          const Duration(seconds: 3),
-        );
-        return returnedArticles;
-      },
-    );
-  }
-
-  Widget createWidgetUnderTest() {
-    return MaterialApp(
-      home: ChangeNotifierProvider(
-        create: (_) => NewsChangeNotifier(mockNewsServices),
-        child: const NewsPage(),
-      ),
-    );
-  }
-
   testWidgets(
     'The title is been showed',
     (WidgetTester tester) async {
-      arrangeNewsServices();
+      arrangeNewsServices(mockNewsServices);
       await tester.pumpWidget(
-        createWidgetUnderTest(),
+        createWidgetUnderTest(mockNewsServices: mockNewsServices),
       );
 
       expect(find.text('News Pages'), findsOneWidget);
@@ -64,9 +27,9 @@ void main() {
   testWidgets(
     'The loading indicator is displayes while waiting for the articles',
     (WidgetTester tester) async {
-      arrangeNewsServicesAfter3Seconds();
+      arrangeNewsServicesAfter3Seconds(mockNewsServices);
       await tester.pumpWidget(
-        createWidgetUnderTest(),
+        createWidgetUnderTest(mockNewsServices: mockNewsServices),
       );
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -79,13 +42,13 @@ void main() {
   testWidgets(
     'articles are displayed correctly',
     (WidgetTester tester) async {
-      arrangeNewsServices();
+      arrangeNewsServices(mockNewsServices);
       await tester.pumpWidget(
-        createWidgetUnderTest(),
+        createWidgetUnderTest(mockNewsServices: mockNewsServices),
       );
 
       await tester.pump();
-      for (final article in returnedArticles) {
+      for (final article in GetArticles.returnedArticles) {
         expect(
           find.text(article.title),
           findsOneWidget,
