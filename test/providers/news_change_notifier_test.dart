@@ -7,7 +7,7 @@ import '../services/news_services_test.dart';
 
 void main() {
   //stu system under Test
-  late NewsChangeNotifier stu;
+  late NewsChangeNotifier systemUnderTest;
   late MockNewsServices mockNewsServices;
 
   /// inicializar tudo relativo a testes
@@ -15,19 +15,19 @@ void main() {
   setUp(() {
     mockNewsServices = MockNewsServices();
 
-    stu = NewsChangeNotifier(mockNewsServices);
+    systemUnderTest = NewsChangeNotifier(mockNewsServices);
   });
 
   test(
-    'verificar se as variaveis estão sendo inicializados da forma correta',
+    'the variables are corretly initialized',
     () {
-      expect(stu.articles, []);
-      expect(stu.isLoading, true);
+      expect(systemUnderTest.articles, []);
+      expect(systemUnderTest.isLoading, true);
     },
   );
 
   group(
-    'Função get articles',
+    'Get Articles Function',
     () {
       final returnedArticles = [
         Article(title: 'title 1', content: 'content 1'),
@@ -42,23 +42,40 @@ void main() {
       }
 
       test(
-        'função getArticle usando a news services',
+        'using the news services',
         () async {
           arrangeNewsServices();
-          await stu.getArticles();
+          await systemUnderTest.getArticles();
           verify(() => mockNewsServices.getArticles()).called(1);
         },
       );
 
       test(
-        'indicar o loading dos dados e que eles chegaram e logo depois garantir que nao estao sendo carregados',
+        'the loading status is changing according to data status',
         () async {
           arrangeNewsServices();
-          final futureMethod = stu.getArticles();
-          expect(stu.isLoading, true);
+          final futureMethod = systemUnderTest.getArticles();
+          expect(systemUnderTest.isLoading, true);
           await futureMethod;
-          expect(stu.articles, returnedArticles);
-          expect(stu.isLoading, false);
+          expect(systemUnderTest.isLoading, false);
+        },
+      );
+
+      test(
+        'article list is not empty after calling get articles',
+        () async {
+          arrangeNewsServices();
+          await systemUnderTest.getArticles();
+          expect(systemUnderTest.articles.isNotEmpty, true);
+        },
+      );
+
+      test(
+        'the size of articles list is same as returned articles',
+        () async {
+          arrangeNewsServices();
+          await systemUnderTest.getArticles();
+          expect(systemUnderTest.articles.length, returnedArticles.length);
         },
       );
     },

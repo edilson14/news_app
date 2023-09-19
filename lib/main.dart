@@ -4,10 +4,7 @@ import 'package:news_app/providers/news_change_notifier.dart';
 import 'package:news_app/services/news_services.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
